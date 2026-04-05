@@ -39,7 +39,7 @@ const DEFAULT_ITEMS: RegistryItem[] = [
   { id: "9", name: "Marcato Pasta Machine", category: "Kitchen", description: "Atlas 150 Plus with nine thickness settings", price: "$155", store: "Sur La Table", url: "https://www.surlatable.com/product/marcato-atlas-150-plus-pasta-machine/9857194", purchased: false },
   { id: "10", name: "Meal Prep Bowl Set", category: "Kitchen", description: "Set of five stainless steel microwavable prep bowls", price: "$115", store: "Black + Blum", url: "https://blackblum.com/products/meal-prep-bowl-set-x5", purchased: false },
   { id: "11", name: "Meater Pro Thermometer", category: "Kitchen", description: "Wireless smart meat thermometer with guided cook", price: "$130", store: "Meater", url: "https://store-us.meater.com/products/meater-pro", purchased: false },
-  { id: "12", name: "Simple Human Sensor Can", category: "Kitchen", description: "58L dual-compartment rectangular voice/motion sensor can", price: "$250", store: "simplehuman", url: "https://www.simplehuman.com/products/58l-sensor-can?variant=45055652266115", purchased: false },
+  { id: "12", name: "simplehuman Sensor Can", category: "Kitchen", description: "58L dual-compartment rectangular voice/motion sensor can", price: "$250", store: "simplehuman", url: "https://www.simplehuman.com/products/58l-sensor-can?variant=45055652266115", purchased: false },
   { id: "13", name: "Smithey Carbon Steel Wok", category: "Kitchen", description: "12-inch hand-forged carbon steel wok with helper handle", price: "$325", store: "Smithey", url: "https://smithey.com/collections/carbon-steel/products/carbon-steel-wok?variant=40920029200541", purchased: false },
 ];
 
@@ -66,7 +66,7 @@ function ItemRow({ item, animDelay, onToggle, pulse }: { item: RegistryItem; ani
           {item.url ? (
             <a href={item.url} target="_blank" rel="noopener noreferrer" className="item-store-link" onClick={(e) => e.stopPropagation()}>
               — {item.store}
-              <svg className="external-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="external-icon" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7" />
                 <path d="M8 1h3m0 0v3m0-3L5.5 6.5" />
               </svg>
@@ -137,6 +137,7 @@ export default function WeddingRegistry() {
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .page { background-color: #faf7ee; min-height: 100vh; font-family: 'Cormorant Garamond', Georgia, serif; color: #1a1a18; padding: 0 16px 80px; }
         .header { text-align: center; padding: 64px 24px 32px; animation: fadeIn .9s ease both; }
         .pre-heading { font-size: 12px; letter-spacing: .35em; text-transform: uppercase; color: #b8972e; margin-bottom: 14px; }
@@ -171,7 +172,20 @@ export default function WeddingRegistry() {
         .item-meta { display: flex; gap: 10px; align-items: baseline; margin-top: 5px; flex-wrap: wrap; }
         .item-category { font-size: 10px; letter-spacing: .25em; text-transform: uppercase; color: #b8972e; }
         .item-description { font-style: italic; font-size: 14px; color: #5a4e38; }
-        .item-store-link { font-size: 12px; color: #8a7040; text-decoration: none; }
+        
+        /* THE FIX FOR THE GIANT ICONS */
+        .item-store-link { 
+          font-size: 12px; color: #8a7040; text-decoration: none; 
+          display: inline-flex; align-items: center; gap: 4px;
+        }
+        .external-icon { 
+          width: 11px !important; 
+          height: 11px !important; 
+          flex-shrink: 0;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
         .item-price { font-size: 17px; color: #6b5a30; }
         .checkbox { width: 22px; height: 22px; border: 1.5px solid rgba(184,151,46,.55); border-radius: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .checkbox.ticked { background: #b8972e; border-color: #b8972e; }
@@ -193,13 +207,11 @@ export default function WeddingRegistry() {
               Should you wish to honour us further, we have curated a selection below.
             </p>
 
-            {/* INSTRUCTIONS */}
             <div className="how-to-box">
               <p className="how-to-step"><strong>1. Select</strong> Click the store link to purchase your gift directly from the retailer.</p>
               <p className="how-to-step"><strong>2. Mark</strong> Return here and click the gold box to let us and other guests know it’s been claimed.</p>
             </div>
 
-            {/* SHIPPING ADDRESS */}
             <div className="shipping-box">
               <span className="shipping-label">Please ship all gifts to:</span>
               <p className="address-text">
