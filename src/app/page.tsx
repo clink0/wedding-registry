@@ -23,16 +23,140 @@ interface RegistryItem {
   purchased: boolean;
 }
 
-// ─── Registry items ───────────────────────────────────────────────────────────
-// Add your own URLs here. These are seeded into Firestore on first load.
 const DEFAULT_ITEMS: RegistryItem[] = [
-  { id: "1",  name: "Coravin Wine System",           category: "Barware",     description: "Timeless Three+ by-the-glass preservation system",      price: "$279",  store: "Coravin",              url: "https://www.coravin.com/collections/coravin-systems/products/timeless-three-plus",                       purchased: false },
-  { id: "2",  name: "Filtered Showerhead",           category: "Bathroom",    description: "Wall-mounted 15-stage filtered shower system",          price: "$99",   store: "MDhair",               url: "https://offers.mdhair.co/filtered-showerhead/landing-page-v2",                                           purchased: false },
-  { id: "3",  name: "Marcato Pasta Machine",         category: "Kitchen",     description: "Atlas 150 Plus with nine thickness settings",           price: "$155",  store: "Sur La Table",         url: "https://www.surlatable.com/product/marcato-atlas-150-plus-pasta-machine/9857194",                        purchased: false },
-  { id: "4",  name: "Meal Prep Bowl Set",            category: "Kitchen",     description: "Set of five small stainless steel microwavable prep bowls",   price: "$115",  store: "Black + Blum",         url: "https://blackblum.com/products/meal-prep-bowl-set-x5",                                                   purchased: false },
-  { id: "5",  name: "Meater Pro Thermometer",        category: "Kitchen",     description: "Wireless smart meat thermometer with guided cook",      price: "$130",  store: "Meater",               url: "https://store-us.meater.com/products/meater-pro",                                                        purchased: false },
-  { id: "6",  name: "Casper Pillows",                category: "Bedroom",     description: "Original pillow double pack, king size",                price: "$171",  store: "Casper",               url: "https://casper.com/products/double-original-pillow?variant=41670973128785",                              purchased: false },
-  { id: "7",  name: "All-Clad Whisk",                category: "Kitchen",     description: "12-inch professional stainless steel balloon whisk",    price: "$30",   store: "All-Clad",             url: "https://www.all-clad.com/stainless-steel-whisk-12-inch.html",                                            purchased: false },
+  // --- BARWARE ---
+  { 
+    id: "1",  
+    name: "Coravin Wine System",           
+    category: "Barware",     
+    description: "Timeless Three+ by-the-glass preservation system",      
+    price: "$279",  
+    store: "Coravin",              
+    url: "https://www.coravin.com/collections/coravin-systems/products/timeless-three-plus",                       
+    purchased: false 
+  },
+
+  // --- BATHROOM ---
+  { 
+    id: "2",  
+    name: "Filtered Showerhead",           
+    category: "Bathroom",    
+    description: "Wall-mounted 15-stage filtered shower system",          
+    price: "$99",   
+    store: "MDhair",               
+    url: "https://offers.mdhair.co/filtered-showerhead/landing-page-v2",                                           
+    purchased: false 
+  },
+
+  // --- BEDROOM ---
+  { 
+    id: "3",  
+    name: "Casper Pillows",                
+    category: "Bedroom",     
+    description: "Original pillow double pack, king size",                
+    price: "$171",  
+    store: "Casper",               
+    url: "https://casper.com/products/double-original-pillow?variant=41670973128785",                              
+    purchased: false 
+  },
+
+  // --- KITCHEN ---
+  { 
+    id: "4",  
+    name: "All-Clad French Whisk",         
+    category: "Kitchen",     
+    description: "12-inch stainless steel French whisk for narrow vessels", 
+    price: "$30",   
+    store: "All-Clad",             
+    url: "https://www.all-clad.com/stainless-steel-whisk-12-inch.html",                                            
+    purchased: false 
+  },
+  { 
+    id: "5",  
+    name: "All-Clad Pastry Brush",         
+    category: "Kitchen",     
+    description: "Silicone tools pastry brush/baster with stainless handle", 
+    price: "$30",   
+    store: "All-Clad",             
+    url: "https://www.all-clad.com/silicone-tools-pastry-brush.html",                                              
+    purchased: false 
+  },
+  { 
+    id: "6",  
+    name: "All-Clad Precision Ladle",      
+    category: "Kitchen",     
+    description: "Stainless steel 6-oz ladle with pouring rim",           
+    price: "$35",   
+    store: "Williams-Sonoma",      
+    url: "https://www.williams-sonoma.com/products/all-clad-stainless-steel-precision-ladle/",                     
+    purchased: false 
+  },
+  { 
+    id: "7",  
+    name: "All-Clad Precision Turner",     
+    category: "Kitchen",     
+    description: "High-quality stainless steel spatula/turner",           
+    price: "$35",   
+    store: "Williams-Sonoma",      
+    url: "https://www.williams-sonoma.com/products/all-clad-stainless-steel-precision-turner/",                    
+    purchased: false 
+  },
+  { 
+    id: "8",  
+    name: "All-Clad Whisk",                
+    category: "Kitchen",     
+    description: "12-inch professional stainless steel balloon whisk",    
+    price: "$30",   
+    store: "All-Clad",             
+    url: "https://www.all-clad.com/stainless-steel-whisk-12-inch.html",                                            
+    purchased: false 
+  },
+  { 
+    id: "9",  
+    name: "Marcato Pasta Machine",         
+    category: "Kitchen",     
+    description: "Atlas 150 Plus with nine thickness settings",           
+    price: "$155",  
+    store: "Sur La Table",         
+    url: "https://www.surlatable.com/product/marcato-atlas-150-plus-pasta-machine/9857194",                        
+    purchased: false 
+  },
+  { 
+    id: "10", name: "Meal Prep Bowl Set",            
+    category: "Kitchen",     
+    description: "Set of five stainless steel microwavable prep bowls",   
+    price: "$115",  
+    store: "Black + Blum",         
+    url: "https://blackblum.com/products/meal-prep-bowl-set-x5",                                                   
+    purchased: false 
+  },
+  { 
+    id: "11", name: "Meater Pro Thermometer",        
+    category: "Kitchen",     
+    description: "Wireless smart meat thermometer with guided cook",      
+    price: "$130",  
+    store: "Meater",               
+    url: "https://store-us.meater.com/products/meater-pro",                                                        
+    purchased: false 
+  },
+  { 
+    id: "12", name: "simplehuman Sensor Can",        
+    category: "Kitchen",     
+    description: "58L dual-compartment rectangular voice/motion sensor can", 
+    price: "$250",  
+    store: "simplehuman",          
+    url: "https://www.simplehuman.com/products/58l-sensor-can?variant=45055652266115",                             
+    purchased: false 
+  },
+  { 
+    id: "13", name: "Smithey Carbon Steel Wok",      
+    category: "Kitchen",     
+    description: "12-inch hand-forged carbon steel wok with helper handle", 
+    price: "$325",  
+    store: "Smithey",              
+    url: "https://smithey.com/collections/carbon-steel/products/carbon-steel-wok?variant=40920029200541",          
+    purchased: false 
+  },
 ];
 
 const COLLECTION = "registry";
