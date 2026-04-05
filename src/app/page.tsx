@@ -39,7 +39,7 @@ const DEFAULT_ITEMS: RegistryItem[] = [
   { id: "9", name: "Marcato Pasta Machine", category: "Kitchen", description: "Atlas 150 Plus with nine thickness settings", price: "$155", store: "Sur La Table", url: "https://www.surlatable.com/product/marcato-atlas-150-plus-pasta-machine/9857194", purchased: false },
   { id: "10", name: "Meal Prep Bowl Set", category: "Kitchen", description: "Set of five stainless steel microwavable prep bowls", price: "$115", store: "Black + Blum", url: "https://blackblum.com/products/meal-prep-bowl-set-x5", purchased: false },
   { id: "11", name: "Meater Pro Thermometer", category: "Kitchen", description: "Wireless smart meat thermometer with guided cook", price: "$130", store: "Meater", url: "https://store-us.meater.com/products/meater-pro", purchased: false },
-  { id: "12", name: "simplehuman Sensor Can", category: "Kitchen", description: "58L dual-compartment rectangular voice/motion sensor can", price: "$250", store: "simplehuman", url: "https://www.simplehuman.com/products/58l-sensor-can?variant=45055652266115", purchased: false },
+  { id: "12", name: "Simple Human Sensor Can", category: "Kitchen", description: "58L dual-compartment rectangular voice/motion sensor can", price: "$250", store: "simplehuman", url: "https://www.simplehuman.com/products/58l-sensor-can?variant=45055652266115", purchased: false },
   { id: "13", name: "Smithey Carbon Steel Wok", category: "Kitchen", description: "12-inch hand-forged carbon steel wok with helper handle", price: "$325", store: "Smithey", url: "https://smithey.com/collections/carbon-steel/products/carbon-steel-wok?variant=40920029200541", purchased: false },
 ];
 
