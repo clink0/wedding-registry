@@ -21,6 +21,7 @@ interface RegistryItem {
   store: string;
   url: string;
   purchased: boolean;
+  claimedBy?: string;
 }
 
 const DEFAULT_ITEMS: RegistryItem[] = [
@@ -51,6 +52,39 @@ function GoldDivider() {
       <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, transparent, #b8972e, transparent)" }} />
       <span style={{ color: "#b8972e", fontSize: "16px", lineHeight: "1" }}>✦</span>
       <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, transparent, #b8972e, transparent)" }} />
+    </div>
+  );
+}
+
+function ClaimModal({ item, onConfirm, onCancel }: { item: RegistryItem; onConfirm: (name: string) => void; onCancel: () => void; }) {
+  const [name, setName] = useState("");
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(26,26,24,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "16px" }}>
+      <div style={{ background: "#faf7ee", border: "1px solid rgba(184,151,46,.35)", borderRadius: "4px", padding: "36px 32px", maxWidth: "420px", width: "100%", fontFamily: "'Cormorant Garamond', Georgia, serif", animation: "fadeIn .25s ease both" }}>
+        <p style={{ fontSize: "10px", letterSpacing: ".25em", textTransform: "uppercase", color: "#b8972e", marginBottom: "10px" }}>Claim Gift</p>
+        <p style={{ fontSize: "21px", fontWeight: 500, color: "#1a1a18", marginBottom: "6px" }}>{item.name}</p>
+        <p style={{ fontSize: "14px", fontStyle: "italic", color: "#5a4e38", marginBottom: "24px" }}>{item.description} &mdash; {item.price}</p>
+        <p style={{ fontSize: "14px", color: "#6b5a30", lineHeight: "1.65", marginBottom: "20px" }}>
+          Please enter your name so we know who to express our gratitude to.
+        </p>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) onConfirm(name.trim()); if (e.key === "Escape") onCancel(); }}
+          placeholder="Your name"
+          autoFocus
+          style={{ width: "100%", padding: "10px 12px", border: "1px solid rgba(184,151,46,.45)", borderRadius: "2px", background: "#fff", fontFamily: "'Cormorant Garamond', serif", fontSize: "16px", color: "#1a1a18", outline: "none", marginBottom: "20px" }}
+        />
+        <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+          <button onClick={onCancel} style={{ background: "none", border: "1px solid rgba(184,151,46,.4)", color: "#8a7040", padding: "8px 18px", fontFamily: "'Cormorant Garamond', serif", fontSize: "13px", textTransform: "uppercase", letterSpacing: ".1em", cursor: "pointer", borderRadius: "2px" }}>
+            Cancel
+          </button>
+          <button onClick={() => { if (name.trim()) onConfirm(name.trim()); }} disabled={!name.trim()} style={{ background: name.trim() ? "#b8972e" : "rgba(184,151,46,.3)", border: "none", color: "#faf7ee", padding: "8px 20px", fontFamily: "'Cormorant Garamond', serif", fontSize: "13px", textTransform: "uppercase", letterSpacing: ".1em", cursor: name.trim() ? "pointer" : "default", borderRadius: "2px", transition: "background .2s" }}>
+            Confirm
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -90,6 +124,7 @@ export default function WeddingRegistry() {
   const [error, setError]             = useState<string | null>(null);
   const [justChecked, setJustChecked] = useState<string | null>(null);
   const [copied, setCopied]           = useState(false);
+  const [pendingClaim, setPendingClaim] = useState<RegistryItem | null>(null);
 
   useEffect(() => {
     let unsubscribe: Unsubscribe | undefined;
@@ -111,13 +146,23 @@ export default function WeddingRegistry() {
     return () => unsubscribe?.();
   }, []);
 
-  const togglePurchased = useCallback(async (item: RegistryItem) => {
-    const updated = { ...item, purchased: !item.purchased };
+  const togglePurchased = useCallback(async (item: RegistryItem, claimedBy?: string) => {
+    const updated: RegistryItem = item.purchased
+      ? { ...item, purchased: false, claimedBy: "" }
+      : { ...item, purchased: true, claimedBy: claimedBy ?? "" };
     setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
     setJustChecked(item.id);
     setTimeout(() => setJustChecked(null), 600);
     await setDoc(doc(db, COLLECTION, item.id), updated);
   }, []);
+
+  const handleCheckboxClick = useCallback((item: RegistryItem) => {
+    if (item.purchased) {
+      togglePurchased(item);
+    } else {
+      setPendingClaim(item);
+    }
+  }, [togglePurchased]);
 
   const copyAddress = () => {
     navigator.clipboard.writeText("511 NW 9th st, Bentonville, AR 72712");
@@ -203,8 +248,8 @@ export default function WeddingRegistry() {
           <div className="info-container">
             <GoldDivider />
             <p className="intro-text">
-              Your presence at our celebration is the greatest gift of all.<br />
-              Should you wish to honour us further, we have curated a selection below.
+              Your love and support as we embark on this exciting new chapter is the greatest gift we could ask for.<br />
+              Should you choose to honor us further, we have created a selection below.
             </p>
 
             <div className="how-to-box">
@@ -234,17 +279,28 @@ export default function WeddingRegistry() {
 
         <div className="frame">
           {available.map((item, idx) => (
-            <ItemRow key={item.id} item={item} animDelay={idx * 0.04} onToggle={togglePurchased} pulse={justChecked === item.id} />
+            <ItemRow key={item.id} item={item} animDelay={idx * 0.04} onToggle={handleCheckboxClick} pulse={justChecked === item.id} />
           ))}
           {purchased.length > 0 && (
             <>
               <div className="bought-divider">✦ &nbsp; Purchased &nbsp; ✦</div>
-              {purchased.map((item) => <ItemRow key={item.id} item={item} onToggle={togglePurchased} pulse={justChecked === item.id} />)}
+              {purchased.map((item) => <ItemRow key={item.id} item={item} onToggle={handleCheckboxClick} pulse={justChecked === item.id} />)}
             </>
           )}
         </div>
         <div className="footer">With Love &amp; Gratitude</div>
       </div>
+
+      {pendingClaim && (
+        <ClaimModal
+          item={pendingClaim}
+          onConfirm={(name) => {
+            togglePurchased(pendingClaim, name);
+            setPendingClaim(null);
+          }}
+          onCancel={() => setPendingClaim(null)}
+        />
+      )}
     </>
   );
 }
