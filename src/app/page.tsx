@@ -36,12 +36,13 @@ const DEFAULT_ITEMS: RegistryItem[] = [
   { id: "5", name: "All-Clad Pastry Brush", category: "Kitchen", description: "Silicone tools pastry brush/baster with stainless handle", price: "$30", store: "All-Clad", url: "https://www.all-clad.com/silicone-tools-pastry-brush.html", purchased: false },
   { id: "6", name: "All-Clad Precision Ladle", category: "Kitchen", description: "Stainless steel 6-oz ladle with pouring rim", price: "$35", store: "Williams-Sonoma", url: "https://www.williams-sonoma.com/products/all-clad-stainless-steel-precision-ladle/", purchased: false },
   { id: "7", name: "All-Clad Precision Turner", category: "Kitchen", description: "High-quality stainless steel spatula/turner", price: "$35", store: "Williams-Sonoma", url: "https://www.williams-sonoma.com/products/all-clad-stainless-steel-precision-turner/", purchased: false },
-  { id: "8", name: "All-Clad Whisk", category: "Kitchen", description: "12-inch professional stainless steel balloon whisk", price: "$30", store: "All-Clad", url: "https://www.all-clad.com/stainless-steel-whisk-12-inch.html", purchased: false },
+  { id: "8", name: "Hitohira HG Damascus Nakiri", category: "Kitchen", description: "160mm Damascus-clad stainless steel nakiri with mahogany western handle", price: "$140", store: "Carbon Knife Co", url: "https://carbonknifeco.com/products/hitohira-hg-damascus-nakiri", purchased: false },
   { id: "9", name: "Marcato Pasta Machine", category: "Kitchen", description: "Atlas 150 Plus with nine thickness settings", price: "$155", store: "Sur La Table", url: "https://www.surlatable.com/product/marcato-atlas-150-plus-pasta-machine/9857194", purchased: false },
   { id: "10", name: "Meal Prep Bowl Set", category: "Kitchen", description: "Set of five stainless steel microwavable prep bowls", price: "$115", store: "Black + Blum", url: "https://blackblum.com/products/meal-prep-bowl-set-x5", purchased: false },
   { id: "11", name: "Meater Pro Thermometer", category: "Kitchen", description: "Wireless smart meat thermometer with guided cook", price: "$130", store: "Meater", url: "https://store-us.meater.com/products/meater-pro", purchased: false },
-  { id: "12", name: "Simple Human Sensor Can", category: "Kitchen", description: "58L dual-compartment rectangular voice/motion sensor can", price: "$250", store: "simplehuman", url: "https://www.simplehuman.com/products/58l-sensor-can?variant=45055652266115", purchased: false },
+  { id: "12", name: "Smeg 2-Slice Toaster", category: "Kitchen", description: "Retro-style glossy stainless steel toaster with six browning levels", price: "$275", store: "SMEG USA", url: "https://smegstore.us/products/toaster-retro-style-steel-glossy-tsf01ssus?variant_id=52489652404513", purchased: false },
   { id: "13", name: "Smithey Carbon Steel Wok", category: "Kitchen", description: "12-inch hand-forged carbon steel wok with helper handle", price: "$325", store: "Smithey", url: "https://smithey.com/collections/carbon-steel/products/carbon-steel-wok?variant=40920029200541", purchased: false },
+  { id: "15", name: "Fornasetti Tema e Variazioni No. 1", category: "Home", description: "Hand-decorated 26cm porcelain wall plate featuring Lina Cavalieri", price: "$185", store: "Fornasetti", url: "https://www.fornasetti.com/en-us/products/wall-plate-tema-e-variazioni-n-1-white-black-ptv001xfor20bia", purchased: false },
 ];
 
 const COLLECTION = "registry";
@@ -131,8 +132,10 @@ export default function WeddingRegistry() {
     async function init() {
       try {
         const snapshot = await getDocs(collection(db, COLLECTION));
-        if (snapshot.empty) {
-          await Promise.all(DEFAULT_ITEMS.map((item) => setDoc(doc(db, COLLECTION, item.id), item)));
+        const existingIds = new Set(snapshot.docs.map((d) => d.id));
+        const newItems = DEFAULT_ITEMS.filter((item) => !existingIds.has(item.id));
+        if (newItems.length > 0) {
+          await Promise.all(newItems.map((item) => setDoc(doc(db, COLLECTION, item.id), item)));
         }
         unsubscribe = onSnapshot(collection(db, COLLECTION), (snap) => {
           const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as RegistryItem));
