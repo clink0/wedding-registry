@@ -121,11 +121,17 @@ function ItemRow({ item, animDelay, onToggle, pulse }: { item: RegistryItem; ani
 
 export default function WeddingRegistry() {
   const [items, setItems]             = useState<RegistryItem[]>([]);
-  const [loaded, setLoaded]           = useState(false);
+  const [dataLoaded, setDataLoaded]   = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const loaded = dataLoaded && fontsLoaded;
   const [error, setError]             = useState<string | null>(null);
   const [justChecked, setJustChecked] = useState<string | null>(null);
   const [copied, setCopied]           = useState(false);
   const [pendingClaim, setPendingClaim] = useState<RegistryItem | null>(null);
+
+  useEffect(() => {
+    document.fonts.ready.then(() => setFontsLoaded(true));
+  }, []);
 
   useEffect(() => {
     let unsubscribe: Unsubscribe | undefined;
@@ -141,9 +147,9 @@ export default function WeddingRegistry() {
           const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as RegistryItem));
           data.sort((a, b) => Number(a.id) - Number(b.id));
           setItems(data);
-          setLoaded(true);
-        }, (err) => { setError("Unable to load registry."); setLoaded(true); });
-      } catch (err) { setError("Unable to connect to registry."); setLoaded(true); }
+          setDataLoaded(true);
+        }, (err) => { setError("Unable to load registry."); setDataLoaded(true); });
+      } catch (err) { setError("Unable to connect to registry."); setDataLoaded(true); }
     }
     init();
     return () => unsubscribe?.();
@@ -177,12 +183,32 @@ export default function WeddingRegistry() {
   const purchased = items.filter((i) =>  i.purchased);
   const pct       = items.length ? (purchased.length / items.length) * 100 : 0;
 
-  if (!loaded) return <div style={{ background: "#faf7ee", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontFamily: "'Great Vibes', cursive", fontSize: "28px", color: "#b8972e" }}>Loading…</span></div>;
+  if (!loaded) return (
+    <div style={{ background: "#faf7ee", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "24px" }}>
+      <div style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(48px, 10vw, 80px)", color: "#b8972e", lineHeight: 1.1, textAlign: "center" }}>
+        Iris &amp; Luke
+      </div>
+      <div style={{ display: "flex", gap: "8px" }}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} style={{
+            width: "6px", height: "6px", borderRadius: "50%", background: "#b8972e",
+            animation: "loadingDot .9s ease-in-out infinite",
+            animationDelay: `${i * 0.18}s`,
+          }} />
+        ))}
+      </div>
+      <style>{`
+        @keyframes loadingDot {
+          0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+          40% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
+    </div>
+  );
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
